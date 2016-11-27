@@ -4,12 +4,13 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.br.exception.SaidaException;
 import com.br.model.IWebService;
 
 
@@ -18,9 +19,8 @@ public class WebServiceTest {
 	private String saida;
 	
 	@Before
-	public void setup() {
+	public void setUp() {
 		webServiceMock = createMock(IWebService.class);
-
 	}
 
 	@Test
@@ -29,10 +29,9 @@ public class WebServiceTest {
 		expect(webServiceMock.read()).andReturn("1");
 		replay(webServiceMock);
 		this.saida = webServiceMock.read();
-		Assert.assertEquals("1", saida);
+		assertEquals("1", saida);
 		this.saida = "1 - Retorno";
 		verify(webServiceMock);
-				
 	}
 	
 	@Test
@@ -40,7 +39,7 @@ public class WebServiceTest {
 		expect(webServiceMock.read()).andReturn("2");
 		replay(webServiceMock);
 		this.saida = webServiceMock.read();
-		Assert.assertEquals("2", saida);
+		assertEquals("2", saida);
 		this.saida = "2 - Retorno SADT";
 		verify(webServiceMock);
 	}
@@ -50,10 +49,9 @@ public class WebServiceTest {
 		expect(webServiceMock.read()).andReturn("3");
 		replay(webServiceMock);
 		this.saida = webServiceMock.read();
-		Assert.assertEquals("3", saida);
+		assertEquals("3", saida);
 		this.saida = "3 - Referência";
 		verify(webServiceMock);
-		
 	}
 	
 	@Test
@@ -61,7 +59,7 @@ public class WebServiceTest {
 		expect(webServiceMock.read()).andReturn("4");
 		replay(webServiceMock);
 		this.saida = webServiceMock.read();
-		Assert.assertEquals("4", saida);
+		assertEquals("4", saida);
 		this.saida = "4 - Internação";
 		verify(webServiceMock);
 	}
@@ -71,10 +69,9 @@ public class WebServiceTest {
 		expect(webServiceMock.read()).andReturn("5");
 		replay(webServiceMock);
 		this.saida = webServiceMock.read();
-		Assert.assertEquals("5", saida);
+		assertEquals("5", saida);
 		this.saida = "5 - Alta";
 		verify(webServiceMock);
-		
 	}
 	
 	@Test
@@ -82,11 +79,35 @@ public class WebServiceTest {
 		expect(webServiceMock.read()).andReturn("6");
 		replay(webServiceMock);
 		this.saida = webServiceMock.read();
-		Assert.assertEquals("6", saida);
+		assertEquals("6", saida);
 		this.saida = "6 - Obito";
-		verify(webServiceMock);
-		
+		verify(webServiceMock);	
 	}
+	
+	@Test
+	public void testTipoInvalido() {
+		expect(webServiceMock.read()).andReturn("7");
+		replay(webServiceMock);
+		this.saida = webServiceMock.read();
+		assertEquals("7", saida);
+		this.saida = "Tipo enválido";
+		verify(webServiceMock);	
+	}
+	
+	@Test
+	public void testTipoException() {
+		expect(webServiceMock.read()).andThrow(new SaidaException("Formato inválido"));
+		replay(webServiceMock);
+		try{
+			this.saida = webServiceMock.read();
+			fail("sem excessão");
+		}catch(SaidaException e){
+			assertEquals("Formato inválido",e.getMessage());
+			this.saida = e.getMessage();
+		}
+		verify(webServiceMock);
+	}
+	
 	@After
 	public void mensagem(){
 		System.out.println(saida);
